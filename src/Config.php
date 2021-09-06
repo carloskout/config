@@ -8,6 +8,19 @@ namespace Koutinh\Util;
  */
 final class Config {
 
+    /**
+     * Array associativo onde as chaves correspondem aos nomes
+     * dos arquivos de configurações e os valores correspondem
+     * aos nomes de variáveis que armazenam os parâmetros de
+     * configurações dentro dos respectivos arquivos de config.
+     *
+     * @var array
+     */
+    private static $filesConfig = array(
+        'database' => 'db_config',
+        'app' => 'app_config'
+    );
+
     private function __construct(){}
 
     /**
@@ -75,18 +88,14 @@ final class Config {
         $keys = explode('.', $path);
         $fileName = $keys[0];
         unset($keys[0]);
-
         $config = null;
-    
-        switch($fileName) {
-            case 'app':
-                $config = &$GLOBALS['app_config'];
-            break;
-            case 'database':
-                $config = &$GLOBALS['db_config'];
-            break;
-            default:
+
+        if(isset(self::$filesConfig[$fileName])) {
+            $config = &$GLOBALS[self::$filesConfig[$fileName]];
+            if(!$config)
                 return null;
+        } else {
+            return null;
         }
 
         if($callback && is_callable($callback)) {
@@ -94,7 +103,6 @@ final class Config {
         } else {
             return null;
         }
-
 
     }
 
@@ -160,6 +168,18 @@ final class Config {
                 return false;
             }
         }
+    }
+
+    /**
+     * Sobreescreve os valores padrões dos arquivos de configurações.
+     *
+     * @param array $opts - Array associativo onde as chaves correspondem
+     * aos nomes do arquivos de configurações e os valores correspondem
+     * as nomes de variáveis dentro desses arquivos de configurações.
+     * @return void
+     */
+    public static function addFilesConfig(array $opts):void {
+        self::$filesConfig = !empty($opts)?: self::$filesConfig;
     }
 }
 
