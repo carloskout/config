@@ -179,7 +179,7 @@ final class Config {
      * @return void
      */
     public static function addFilesConfig(array $opts):void {
-        self::$filesConfig = !empty($opts)?: self::$filesConfig;
+        self::$filesConfig = !empty($opts)? $opts : self::$filesConfig;
     }
 }
 

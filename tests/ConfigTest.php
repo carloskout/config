@@ -4,6 +4,10 @@ namespace Koutinh\Tests;
 use PHPUnit\Framework\TestCase;
 use Koutinh\Util\Config;
 
+/**
+ * ConfigTest usa definições padrões de arquivos de configurações
+ * definidas em um array interno dentro da classe src\Config.php
+ */
 class ConfigTest extends TestCase {
 
     protected function setUp():void {
