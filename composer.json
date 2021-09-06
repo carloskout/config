@@ -11,6 +11,11 @@
             "Koutinh\\Util\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Koutinh\\Tests\\": "tests"
+        }
+    },
     "authors": [
         {
             "name": "Carlos Coutinho",

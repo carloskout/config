@@ -1,9 +1,10 @@
 <?php
-namespace Koutinh;
+namespace Koutinh\Util;
 
 /**
- * FINALIDADE: Acessar e modificar as configurações definidas
- * no diretório src/config/*
+ * Utilitário responsável por modificar e acessar parâmetros
+ * de configurações definidos em arquivos config na raiz do
+ *  projeto. config/databse.php
  */
 final class Config {
 
@@ -38,7 +39,7 @@ final class Config {
      * Define o valor em um determinado arquivo
      * de configuração.
      *
-     * @param string $path - Caminho da configuração a ser modificada.
+     * @param string $path - Caminho da configuração a ser modificado.
      * Padrão do path: As palavras devem ser separadas
      * por ponto. A primeira representa o nome do arquivo de configuração,
      * as demais representam chaves de configurações a serem modificadas.
@@ -47,11 +48,11 @@ final class Config {
      * @param mix $newValue - O novo valor a ser definido para a configurão
      * especificada.
      * 
-     * @return void
+     * @return boolean
      */
-    public static function set(string $path, $newValue):void {
-        self::processPath($path, function(&$config, $keys, $args) {
-            self::setValue($config, $keys, $args[0]);// $args[0] == $newValue
+    public static function set(string $path, $newValue) {
+        return self::processPath($path, function(&$config, $keys, $args) {
+            return self::setValue($config, $keys, $args[0]);// $args[0] == $newValue
         }, $newValue);
     }
 
@@ -84,6 +85,8 @@ final class Config {
             case 'database':
                 $config = &$GLOBALS['db_config'];
             break;
+            default:
+                return null;
         }
 
         if($callback && is_callable($callback)) {
@@ -95,7 +98,16 @@ final class Config {
 
     }
 
-    //Auxilia o metodo get a recuperar o valor da config. especificada
+    /**
+     * Método recursivo que busca valores de parâmetros
+     * especificados.
+     *
+     * @param array $config - Array de configuração
+     * @param array $keys - Conjunto de palavras divididas por ponto. 
+     * Cada palavra corresponde a uma chave a ser percorrida no array config.
+     * 
+     * @return mix - Valor do parâmetro encontrado.
+     */
     private static function getValue($config, $keys) {
         if(empty($keys)) {
             return $config;
@@ -109,27 +121,43 @@ final class Config {
                 unset($keys[$key]);
                 return self::getValue($config[$value], $keys);
             } else {
-                return;
+                return null;
             }
         }
     }
 
-    //Auxilia o metodo set a modificar o valor da config. especificada
-    private static function setValue(array &$config, array $keys, $newValue) {
+    /**
+     * Método recursivo que faz alteração no parâmetro de configuração
+     * especificado.
+     *
+     * @param array $config - Array de configuração
+     * 
+     * @param array $keys - Conjunto de palavras divididas por ponto. 
+     * Cada palavra corresponde a uma chave a ser percorrida no array config.
+     * 
+     * @param mix $newValue - Novo valor que irá substituir o valor atual do 
+     * parâmentro de configuração encontrado.
+     * 
+     * @return boolean - Retorna true caso haja a alteração do parâmetro.
+     * Retorna false caso contrário.
+     */
+    private static function setValue(array &$config, array $keys, $newValue):bool {
         if(empty($keys)) {
             $config = $newValue;
+            return true;
         }
 
         foreach($keys as $key => $value) {
             if(isset($config[$value])) {
                 if(!is_array($config[$value])) {
                     $config[$value] = $newValue;
+                    return true;
                 } else {
                     unset($keys[$key]);
-                    self::setValue($config[$value], $keys, $newValue);
+                    return self::setValue($config[$value], $keys, $newValue);
                 }
             } else {
-                return;
+                return false;
             }
         }
     }
