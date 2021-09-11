@@ -23,7 +23,8 @@ class ConfigTest extends TestCase {
                 ),
             ),
         
-            'encoding' => 'UTF8'
+            'encoding' => 'UTF8',
+            'alfanum123' => 'valido'
         ); 
     }
 
@@ -39,11 +40,15 @@ class ConfigTest extends TestCase {
         $this->assertNull(Config::get('123.er3.124'));
     }
 
+    public function testRetornoStringParaParametroConfigValido() {
+        $this->assertIsString(Config::get('database.alfanum123'));
+    }
+
     public function testRetornoNullParaArquivoConfigNaoExistente() {
         $this->assertNull(Config::get('arquivonaoexiste.encoding'));
     }
 
-    public function testRetornoStringParaParametroConfigValido() {
+    public function testRetornoStringParaParametroConfigExistente() {
         $this->assertIsString(Config::get('database.encoding'));
     }
 

@@ -81,7 +81,7 @@ final class Config {
      * @return mix|void
      */
     private static function processPath(string $path, $callback, ...$args) {
-        if($path == '' || !preg_match('/[A-Za-z]+(\.[A-Za-z])+/', $path)) {
+        if($path == '' || !preg_match('/[A-Za-z]+[0-9]*(\.[A-Za-z]+[0-9]*)+/', $path)) {
             return null;
         }
 
