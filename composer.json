@@ -1,6 +1,6 @@
 {
     "name": "koutinh/config",
-    "description": "Utilit\u0000rio para acesso e defini\u0000\u0000o de par\u0000mtros de configura\u0000\u0000es",
+    "description": "Utilitário para acesso e definição de parâmetros de configurações",
     "type": "library",
     "version": "1.0.0",
     "require-dev": {
